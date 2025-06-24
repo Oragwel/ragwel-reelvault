@@ -3,7 +3,14 @@ import SearchBar from '../components/SearchBar'
 import MovieCard from '../components/MovieCard'
 import { debounce } from '../utils/debounce'
 import { Link } from 'react-router-dom'
-import { searchTMDB, getTrendingMovies } from '../services/tmdb'
+import {
+  searchTMDB,
+  getTrendingMovies,
+  getTrendingMoviesOnly,
+  getTrendingTVShows,
+  getPopularMovies,
+  getTopRatedMovies
+} from '../services/tmdb'
 
 
 const Home = () => {
@@ -11,27 +18,51 @@ const Home = () => {
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [activeCategory, setActiveCategory] = useState('trending')
 
   const handleInputChange = (e) => {
     setQuery(e.target.value)
   }
 
-  const debouncedSearch = debounce(async (q) => {
-    if (!q) return setResults([])
+  const handleCategoryChange = async (category) => {
+    setActiveCategory(category)
+    setQuery('') // Clear search when switching categories
+
     try {
       setLoading(true)
       setError(null)
-      const data = await searchTMDB(q)
+
+      let data = []
+      switch (category) {
+        case 'trending':
+          data = await getTrendingMovies()
+          break
+        case 'movies':
+          data = await getTrendingMoviesOnly()
+          break
+        case 'tv':
+          data = await getTrendingTVShows()
+          break
+        case 'popular':
+          data = await getPopularMovies()
+          break
+        case 'top-rated':
+          data = await getTopRatedMovies()
+          break
+        default:
+          data = await getTrendingMovies()
+      }
+
       setResults(data)
     } catch (err) {
-      setError('Failed to fetch search results.')
+      setError('Failed to fetch content.')
     } finally {
       setLoading(false)
     }
-  }, 500)
+  }
 
 
-// Fetch data when query changes
+// Fetch data when query changes or component mounts
  useEffect(() => {
   const fetchData = async () => {
     try {
@@ -53,6 +84,11 @@ const Home = () => {
   fetchData()
 }, [query])
 
+// Load trending movies on component mount
+useEffect(() => {
+  handleCategoryChange('trending')
+}, [])
+
 
   return (
     <div>
@@ -62,10 +98,38 @@ const Home = () => {
 
   <nav>
     <ul className="nav-menu">
-      <li><a href="/">Home</a></li>
-      <li><a href="#trending">Trending</a></li>
-      <li><a href="#genres">Genres</a></li>
-      <li><a href="#watchlist">Watchlist</a></li>
+      <li>
+        <button
+          className={`nav-btn ${activeCategory === 'trending' ? 'active' : ''}`}
+          onClick={() => handleCategoryChange('trending')}
+        >
+          🔥 Trending
+        </button>
+      </li>
+      <li>
+        <button
+          className={`nav-btn ${activeCategory === 'movies' ? 'active' : ''}`}
+          onClick={() => handleCategoryChange('movies')}
+        >
+          🎬 Movies
+        </button>
+      </li>
+      <li>
+        <button
+          className={`nav-btn ${activeCategory === 'tv' ? 'active' : ''}`}
+          onClick={() => handleCategoryChange('tv')}
+        >
+          📺 TV Shows
+        </button>
+      </li>
+      <li>
+        <button
+          className={`nav-btn ${activeCategory === 'popular' ? 'active' : ''}`}
+          onClick={() => handleCategoryChange('popular')}
+        >
+          ⭐ Popular
+        </button>
+      </li>
     </ul>
   </nav>
 </header>
@@ -74,9 +138,28 @@ const Home = () => {
   <SearchBar query={query} onChange={handleInputChange} />
 </div>
 
+{/* Content Section Header */}
+{!query && (
+  <div className="content-section">
+    <h2 className="section-title">
+      {activeCategory === 'trending' && '🔥 Trending This Week'}
+      {activeCategory === 'movies' && '🎬 Trending Movies'}
+      {activeCategory === 'tv' && '📺 Trending TV Shows'}
+      {activeCategory === 'popular' && '⭐ Popular Movies'}
+      {activeCategory === 'top-rated' && '🏆 Top Rated Movies'}
+    </h2>
+  </div>
+)}
 
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+{/* Search Results Header */}
+{query && (
+  <div className="search-results-header">
+    <h2 className="section-title">🔍 Search Results for "{query}"</h2>
+  </div>
+)}
+
+{loading && <div className="loading">Loading...</div>}
+{error && <div className="error">{error}</div>}
 
       <div className="results">
         {results.map((item) =>
