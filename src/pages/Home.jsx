@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import SearchBar from '../components/SearchBar'
 import MovieCard from '../components/MovieCard'
+import WatchlistNotification from '../components/WatchlistNotification'
 import { debounce } from '../utils/debounce'
 import { Link } from 'react-router-dom'
+import { useWatchlist } from '../context/WatchlistContext'
 import {
   searchTMDB,
   getTrendingMovies,
@@ -19,6 +21,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [activeCategory, setActiveCategory] = useState('trending')
+  const { watchlist } = useWatchlist()
 
   const handleInputChange = (e) => {
     setQuery(e.target.value)
@@ -87,11 +90,13 @@ const Home = () => {
 // Load trending movies on component mount
 useEffect(() => {
   handleCategoryChange('trending')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [])
 
 
   return (
     <div>
+      <WatchlistNotification />
       <header>
   <h1>🎬 Ragwel ReelVault</h1>
   <p>Find movies and TV shows in seconds.</p>
@@ -132,6 +137,13 @@ useEffect(() => {
       </li>
     </ul>
   </nav>
+
+  {/* Separate Watchlist Navigation */}
+  <div className="watchlist-nav-container">
+    <Link to="/watchlist" className="watchlist-nav-btn">
+      📝 Watchlist {watchlist.length > 0 && <span className="watchlist-count">({watchlist.length})</span>}
+    </Link>
+  </div>
 </header>
 
 <div className="search-bar">
@@ -176,6 +188,8 @@ useEffect(() => {
                     ? `https://image.tmdb.org/t/p/w300${item.poster_path}`
                     : 'https://via.placeholder.com/150x225?text=No+Image'
                 }
+                movie={item}
+                showWatchlistButton={true}
               />
             </Link>
           ) : null
