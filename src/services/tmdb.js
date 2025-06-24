@@ -38,3 +38,31 @@ export async function getTrendingMovies() {
   const data = await res.json()
   return data.results
 }
+
+export async function getTrendingMoviesOnly() {
+  const res = await fetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}`)
+  if (!res.ok) throw new Error('Failed to fetch trending movies')
+  const data = await res.json()
+  return data.results
+}
+
+export async function getTrendingTVShows() {
+  const res = await fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}`)
+  if (!res.ok) throw new Error('Failed to fetch trending TV shows')
+  const data = await res.json()
+  return data.results
+}
+
+export async function getPopularMovies() {
+  const res = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}`)
+  if (!res.ok) throw new Error('Failed to fetch popular movies')
+  const data = await res.json()
+  return data.results
+}
+
+export async function getTopRatedMovies() {
+  const res = await fetch(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}`)
+  if (!res.ok) throw new Error('Failed to fetch top rated movies')
+  const data = await res.json()
+  return data.results
+}
