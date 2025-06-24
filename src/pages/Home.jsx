@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import SearchBar from '../components/SearchBar'
 import MovieCard from '../components/MovieCard'
-import { searchTMDB } from '../services/tmdb'
 import { debounce } from '../utils/debounce'
 import { Link } from 'react-router-dom'
+import { searchTMDB, getTrendingMovies } from '../services/tmdb'
+
 
 const Home = () => {
   const [query, setQuery] = useState('')
@@ -29,18 +30,51 @@ const Home = () => {
     }
   }, 500)
 
-  useEffect(() => {
-    debouncedSearch(query)
-  }, [query])
+
+// Fetch data when query changes
+ useEffect(() => {
+  const fetchData = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      const data = query.trim()
+        ? await searchTMDB(query)
+        : await getTrendingMovies()
+
+      setResults(data)
+    } catch (err) {
+      setError('Something went wrong while fetching movies.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  fetchData()
+}, [query])
+
 
   return (
     <div>
       <header>
-        <h1>🎬 Ragwel ReelVault</h1>
-        <p>Find movies and TV shows in seconds.</p>
-      </header>
+  <h1>🎬 Ragwel ReelVault</h1>
+  <p>Find movies and TV shows in seconds.</p>
 
-      <SearchBar query={query} onChange={handleInputChange} />
+  <nav>
+    <ul className="nav-menu">
+      <li><a href="/">Home</a></li>
+      <li><a href="#trending">Trending</a></li>
+      <li><a href="#genres">Genres</a></li>
+      <li><a href="#watchlist">Watchlist</a></li>
+    </ul>
+  </nav>
+</header>
+
+// Search bar
+<div className="search-bar">
+  <SearchBar query={query} onChange={handleInputChange} />
+</div>
+
 
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
