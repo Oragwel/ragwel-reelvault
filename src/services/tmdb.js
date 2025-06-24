@@ -30,3 +30,11 @@ export async function searchTMDB(query) {
   const data = await res.json()
   return data.results
 }
+
+
+export async function getTrendingMovies() {
+  const res = await fetch(`${BASE_URL}/trending/all/week?api_key=${API_KEY}`)
+  if (!res.ok) throw new Error('Failed to fetch trending titles')
+  const data = await res.json()
+  return data.results
+}
