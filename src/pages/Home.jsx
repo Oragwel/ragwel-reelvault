@@ -70,7 +70,6 @@ const Home = () => {
   </nav>
 </header>
 
-// Search bar
 <div className="search-bar">
   <SearchBar query={query} onChange={handleInputChange} />
 </div>
