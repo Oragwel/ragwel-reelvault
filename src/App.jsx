@@ -6,6 +6,7 @@ import Home from './pages/Home'
 import Details from './pages/Details'
 import Watchlist from './pages/Watchlist'
 import Watched from './pages/Watched'
+import TrendingDashboard from './pages/TrendingDashboard'
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
             <Route path="/details/:type/:id" element={<Details />} />
             <Route path="/watchlist" element={<Watchlist />} />
             <Route path="/watched" element={<Watched />} />
+            <Route path="/trending" element={<TrendingDashboard />} />
           </Routes>
         </div>
       </WatchedProvider>
