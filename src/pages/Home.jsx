@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import SearchBar from '../components/SearchBar'
 import MovieCard from '../components/MovieCard'
 import WatchlistNotification from '../components/WatchlistNotification'
+import WatchedNotification from '../components/WatchedNotification'
 import { debounce } from '../utils/debounce'
 import { Link } from 'react-router-dom'
 import { useWatchlist } from '../context/WatchlistContext'
@@ -97,6 +98,7 @@ useEffect(() => {
   return (
     <div>
       <WatchlistNotification />
+      <WatchedNotification />
       <header>
   <h1>🎬 Ragwel ReelVault</h1>
   <p>Find movies and TV shows in seconds.</p>
@@ -135,15 +137,13 @@ useEffect(() => {
           ⭐ Popular
         </button>
       </li>
+      <li>
+        <Link to="/watchlist" className="nav-btn watchlist-nav">
+          📝 Watchlist {watchlist.length > 0 && <span className="watchlist-count">({watchlist.length})</span>}
+        </Link>
+      </li>
     </ul>
   </nav>
-
-  {/* Separate Watchlist Navigation */}
-  <div className="watchlist-nav-container">
-    <Link to="/watchlist" className="watchlist-nav-btn">
-      📝 Watchlist {watchlist.length > 0 && <span className="watchlist-count">({watchlist.length})</span>}
-    </Link>
-  </div>
 </header>
 
 <div className="search-bar">

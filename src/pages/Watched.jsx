@@ -1,30 +1,31 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useWatched } from '../context/WatchedContext'
 import { useWatchlist } from '../context/WatchlistContext'
 import MovieCard from '../components/MovieCard'
-import WatchlistNotification from '../components/WatchlistNotification'
+import WatchedNotification from '../components/WatchedNotification'
 
-const Watchlist = () => {
-  const { watchlist, clearWatchlist } = useWatchlist()
+const Watched = () => {
+  const { watchedList, clearWatchedList } = useWatched()
+  const { watchlist } = useWatchlist()
   const navigate = useNavigate()
 
   const handleCategoryChange = (category) => {
     // Navigate back to home with the selected category
     navigate('/')
-    // Note: We'll need to pass the category somehow, for now just go to home
   }
 
   return (
-    <div className="watchlist-page">
-      <WatchlistNotification />
+    <div className="watched-page">
+      <WatchedNotification />
       <header>
-        <h1>📝 My Watchlist</h1>
-        <p>Your saved movies and TV shows</p>
-
+        <h1>✅ Watched Movies & Shows</h1>
+        <p>Your viewing history and completed content</p>
+        
         <nav>
           <ul className="nav-menu">
             <li>
-              <button
+              <button 
                 className="nav-btn"
                 onClick={() => handleCategoryChange('trending')}
               >
@@ -32,7 +33,7 @@ const Watchlist = () => {
               </button>
             </li>
             <li>
-              <button
+              <button 
                 className="nav-btn"
                 onClick={() => handleCategoryChange('movies')}
               >
@@ -40,7 +41,7 @@ const Watchlist = () => {
               </button>
             </li>
             <li>
-              <button
+              <button 
                 className="nav-btn"
                 onClick={() => handleCategoryChange('tv')}
               >
@@ -48,7 +49,7 @@ const Watchlist = () => {
               </button>
             </li>
             <li>
-              <button
+              <button 
                 className="nav-btn"
                 onClick={() => handleCategoryChange('popular')}
               >
@@ -56,7 +57,7 @@ const Watchlist = () => {
               </button>
             </li>
             <li>
-              <Link to="/watchlist" className="nav-btn watchlist-nav active">
+              <Link to="/watchlist" className="nav-btn watchlist-nav">
                 📝 Watchlist {watchlist.length > 0 && <span className="watchlist-count">({watchlist.length})</span>}
               </Link>
             </li>
@@ -64,12 +65,12 @@ const Watchlist = () => {
         </nav>
       </header>
 
-      <div className="watchlist-content">
-        {watchlist.length === 0 ? (
-          <div className="empty-watchlist">
+      <div className="watched-content">
+        {watchedList.length === 0 ? (
+          <div className="empty-watched">
             <div className="empty-state">
-              <h2>📝 Your watchlist is empty</h2>
-              <p>Start adding movies and TV shows to keep track of what you want to watch!</p>
+              <h2>✅ No watched content yet</h2>
+              <p>Start marking movies and TV shows as watched to keep track of what you've seen!</p>
               <Link to="/" className="back-to-home-btn">
                 🔍 Discover Movies
               </Link>
@@ -77,23 +78,23 @@ const Watchlist = () => {
           </div>
         ) : (
           <>
-            <div className="watchlist-header">
-              <div className="watchlist-stats">
+            <div className="watched-header">
+              <div className="watched-stats">
                 <h2 className="section-title">
-                  📝 My Watchlist ({watchlist.length} {watchlist.length === 1 ? 'item' : 'items'})
+                  ✅ Watched ({watchedList.length} {watchedList.length === 1 ? 'item' : 'items'})
                 </h2>
               </div>
               <button 
-                className="clear-watchlist-btn"
-                onClick={clearWatchlist}
-                title="Clear entire watchlist"
+                className="clear-watched-btn"
+                onClick={clearWatchedList}
+                title="Clear entire watched list"
               >
                 🗑️ Clear All
               </button>
             </div>
 
-            <div className="watchlist-grid">
-              {watchlist.map((item) => (
+            <div className="watched-grid">
+              {watchedList.map((item) => (
                 <Link
                   key={item.id}
                   to={`/details/${item.media_type}/${item.id}`}
@@ -104,6 +105,7 @@ const Watchlist = () => {
                     poster={item.poster}
                     movie={item}
                     showWatchlistButton={true}
+                    showWatchedButton={true}
                   />
                 </Link>
               ))}
@@ -115,4 +117,4 @@ const Watchlist = () => {
   )
 }
 
-export default Watchlist
+export default Watched
