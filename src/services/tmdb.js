@@ -66,3 +66,24 @@ export async function getTopRatedMovies() {
   const data = await res.json()
   return data.results
 }
+
+export async function getCredits(type, id) {
+  const res = await fetch(`${BASE_URL}/${type}/${id}/credits?api_key=${API_KEY}`)
+  if (!res.ok) throw new Error('Failed to fetch credits')
+  const data = await res.json()
+  return data
+}
+
+export async function getVideos(type, id) {
+  const res = await fetch(`${BASE_URL}/${type}/${id}/videos?api_key=${API_KEY}`)
+  if (!res.ok) throw new Error('Failed to fetch videos')
+  const data = await res.json()
+  return data.results
+}
+
+export async function getSimilar(type, id) {
+  const res = await fetch(`${BASE_URL}/${type}/${id}/similar?api_key=${API_KEY}`)
+  if (!res.ok) throw new Error('Failed to fetch similar content')
+  const data = await res.json()
+  return data.results
+}
