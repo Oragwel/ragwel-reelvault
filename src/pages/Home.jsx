@@ -138,6 +138,11 @@ useEffect(() => {
         </button>
       </li>
       <li>
+        <Link to="/trending" className="nav-btn dashboard-nav">
+          📊 Dashboard
+        </Link>
+      </li>
+      <li>
         <Link to="/watchlist" className="nav-btn watchlist-nav">
           📝 Watchlist {watchlist.length > 0 && <span className="watchlist-count">({watchlist.length})</span>}
         </Link>
